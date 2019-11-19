@@ -47,7 +47,8 @@ struct OpenACCLoopEmptyConstructFolder : public OpRewritePattern<acc::LoopOp> {
 };
 
 
-void acc::LoopOp::getCanonicalizationPatterns(OwningRewritePatternList &patterns,
+void
+acc::LoopOp::getCanonicalizationPatterns(OwningRewritePatternList &patterns,
                                          MLIRContext *context) {
     patterns.insert<OpenACCLoopEmptyConstructFolder>(context);
 }
