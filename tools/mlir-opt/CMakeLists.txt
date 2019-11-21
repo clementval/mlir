@@ -51,7 +51,7 @@ set(LIBS
   MLIRTestTransforms
   MLIRSupport
   MLIRVectorOps
-  MLIRVectorToLLVM
+  MLIRVectorConversions
 )
 if(MLIR_CUDA_CONVERSIONS_ENABLED)
   list(APPEND LIBS
