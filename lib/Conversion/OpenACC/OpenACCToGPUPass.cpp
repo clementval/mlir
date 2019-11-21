@@ -21,7 +21,9 @@
 //===----------------------------------------------------------------------===//
 
 #include "mlir/Conversion/OpenACC/ConvertOpenACCToGPU.h"
+#include "mlir/Conversion/LoopsToGPU/LoopsToGPU.h"
 #include "mlir/Dialect/OpenACCOps/Passes.h"
+#include "mlir/Dialect/LoopOps/LoopOps.h"
 #include "mlir/Dialect/GPU/GPUDialect.h"
 #include "mlir/Dialect/StandardOps/Ops.h"
 #include "mlir/Dialect/AffineOps/AffineOps.h"
@@ -116,33 +118,38 @@ static FuncOp outlineParallelKernel(acc::ParallelOp parallelOp) {
     return outlinedFunc;
 }
 
-/// Convert the OpenACC construct to run program in a sequential manner.
-static void convertToSequential(ModuleOp m) {
-    m.walk([&](acc::ParallelOp parallelOp) {
-        parallelOp.walk([&](acc::LoopOp loopOp) {
-            extractOperationsForSequential(loopOp);
-            loopOp.erase();
-        });
-        extractOperationsForSequential(parallelOp);
-        parallelOp.erase();
-    });
-}
-
 void OpenACCToGPULoweringPass::runOnModule() {
 
     ConversionTarget target(getContext());
-    target.addIllegalDialect<acc::OpenACCOpsDialect>();
+//    target.addIllegalDialect<acc::OpenACCOpsDialect>();
     target.addLegalDialect<gpu::GPUDialect>();
+
+    target.addLegalOp<acc::ParallelOp>();
+    target.addLegalOp<acc::LoopOp>();
 
     // If operation is considered legal the rewrite pattern in not called.
     OwningRewritePatternList patterns;
-//    patterns.insert<ParallelOpLowering>(&getContext());
-    patterns.insert<TerminatorOpLowering<acc::ParallelEndOp>>(&getContext());
-//    patterns.insert<LoopOpLowering>(&getContext());
-    patterns.insert<TerminatorOpLowering<acc::LoopEndOp>>(&getContext());
+//    patterns.insert<TerminatorOpLowering<acc::ParallelEndOp>>(&getContext());
+//    patterns.insert<TerminatorOpLowering<acc::LoopEndOp>>(&getContext());
 
     auto m = getModule();
-    convertToSequential(m);
+    m.walk([&](acc::ParallelOp parallelOp) {
+        parallelOp.walk([&](acc::LoopOp loopOp) {
+
+            for (auto &op : loopOp.getBody().getOperations()) {
+                if(auto forOp = dyn_cast<loop::ForOp>(&op)) {
+                    convertLoopNestToGPULaunch(forOp, 2, 1);
+                    break;
+                } else {
+                    loopOp.emitError("First operation in acc.loop region must be a loop.");
+                    signalPassFailure();
+                }
+            }
+
+            //loopOp.erase();
+        });
+        //parallelOp.erase();
+    });
 
     if (failed(applyPartialConversion(m, target, patterns)))
         signalPassFailure();
