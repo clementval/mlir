@@ -1,4 +1,4 @@
-//===- Ops.cpp - Loop MLIR Operations -------------------------------------===//
+//===- Ops.cpp - OpenACC MLIR Operations ----------------------------------===//
 //
 // Copyright 2019 The MLIR Authors.
 //

@@ -1,4 +1,4 @@
-//===- GPUDialect.h - MLIR Dialect for GPU Kernels --------------*- C++ -*-===//
+//===- OpenACCOps.h - MLIR Dialect ------------------------------*- C++ -*-===//
 //
 // Copyright 2019 The MLIR Authors.
 //

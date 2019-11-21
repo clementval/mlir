@@ -1,6 +1,6 @@
-//===- ConvertIIRToStencil.cpp - IIR to Stencil dialect conversion --------===//
+//===- OpenACC.cpp - OpenACC to GPU dialect conversion ---------------===//
 //
-// Copyright 2019 Jean-Michel Gorius
+// Copyright 2019 The MLIR Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "mlir/Conversion/OpenACCToGPU/ConvertOpenACCToGPU.h"
+#include "mlir/Conversion/OpenACC/ConvertOpenACCToGPU.h"
 #include "mlir/Dialect/StandardOps/Ops.h"
 #include "llvm/ADT/StringMap.h"
 
@@ -45,7 +45,6 @@ struct OpenACCLoopEmptyConstructFolder : public OpRewritePattern<acc::LoopOp> {
         return matchSuccess();
     }
 };
-
 
 void
 acc::LoopOp::getCanonicalizationPatterns(OwningRewritePatternList &patterns,
