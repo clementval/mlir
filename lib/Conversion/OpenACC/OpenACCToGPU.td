@@ -1,6 +1,6 @@
-//==- OpenACCToGPU.td - IIR Ops to Stencil Patterns ----------*- tablegen -*==//
+//==- OpenACCToGPU.td - OpenACC Ops to GPU Patterns ----------*- tablegen -*==//
 //
-// Copyright 2019 MLIR Authors
+// Copyright 2019 The MLIR Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.

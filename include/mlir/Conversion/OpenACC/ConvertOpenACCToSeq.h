@@ -1,4 +1,4 @@
-//===- Passes.h - OpenACC pass entry points ---------------------*- C++ -*-===//
+//===- ConvertOpenACCToSeq.h - Convert Stencil to Affine ops -*- C++ -*-===//
 //
 // Copyright 2019 The MLIR Authors.
 //
@@ -15,17 +15,22 @@
 // limitations under the License.
 // =============================================================================
 //
-// This header file defines prototypes that expose pass constructors.
+// Provides patterns to convert from Stencil structure ops to affine ops.
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef MLIR_DIALECT_OPENACC_PASSES_H
-#define MLIR_DIALECT_OPENACC_PASSES_H
+#ifndef MLIR_CONVERSION_OPENACC_CONVERTOPENACCTOSEQ_H
+#define MLIR_CONVERSION_OPENACC_CONVERTOPENACCTOSEQ_H
 
-#include "mlir/Pass/Pass.h"
+#include "mlir/Dialect/OpenACCOps/OpenACCOps.h"
+#include "mlir/Support/StringExtras.h"
+#include "mlir/Transforms/DialectConversion.h"
 
 namespace mlir {
-    std::unique_ptr<OpPassBase<mlir::ModuleOp>> createConvertOpenACCToGPUPass();
+    template <typename T> class OpPassBase;
+
+    std::unique_ptr<OpPassBase<FuncOp>> createOpenACCToSeqPass();
+
 } // namespace mlir
 
-#endif // MLIR_DIALECT_OPENACC_PASSES_H
+#endif // MLIR_CONVERSION_OPENACC_CONVERTOPENACCTOSEQ_H

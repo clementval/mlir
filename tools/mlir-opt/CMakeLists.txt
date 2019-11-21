@@ -31,7 +31,7 @@ set(LIBS
   MLIRLLVMIR
   MLIRLoopOps
   MLIROpenACCOps
-  MLIROpenACCToGPU
+  MLIROpenACC
   MLIRNVVMIR
   MLIROptMain
   MLIRParser

@@ -1,4 +1,4 @@
-//===- Ops.td - OpenACC operation definitions ---------------*- tablegen -*-===//
+//===- OpenACCOps.td - OpenACC operation definitions -------*- tablegen -*-===//
 //
 // Copyright 2019 The MLIR Authors.
 //
@@ -100,7 +100,7 @@ def ParallelEndOp : OpenACC_Op<"_parallel_end", [Terminator]> {
 }
 
 def LoopOp : OpenACC_Op<"loop",
-                        [InParallelScope, SingleBlockImplicitTerminator<"LoopEndOp">]> {
+                        [SingleBlockImplicitTerminator<"LoopEndOp">]> {
     let summary = "loop construct";
     let description = [{
         The "acc.loop"

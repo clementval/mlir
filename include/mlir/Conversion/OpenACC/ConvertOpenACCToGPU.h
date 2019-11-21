@@ -1,6 +1,6 @@
-//===- ConvertStencilToAffine.h - Convert Stencil to Affine ops -*- C++ -*-===//
+//===- ConvertOpenACCToGPU.h - Convert Stencil to Affine ops -*- C++ -*-===//
 //
-// Copyright 2019 Fabian Wolff
+// Copyright 2019 The MLIR Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef MLIR_CONVERSION_OPENACCTOGPU_CONVERTOPENACCTOGPU_H
-#define MLIR_CONVERSION_OPENACCTOGPU_CONVERTOPENACCTOGPU_H
+#ifndef MLIR_CONVERSION_OPENACC_CONVERTOPENACCTOGPU_H
+#define MLIR_CONVERSION_OPENACC_CONVERTOPENACCTOGPU_H
 
 #include "mlir/Dialect/OpenACCOps/OpenACCOps.h"
 #include "mlir/Support/StringExtras.h"
@@ -39,4 +39,4 @@ namespace mlir {
 
 } // namespace mlir
 
-#endif // MLIR_CONVERSION_OPENACCTOGPU_CONVERTOPENACCTOGPU_H
+#endif // MLIR_CONVERSION_OPENACC_CONVERTOPENACCTOGPU_H
