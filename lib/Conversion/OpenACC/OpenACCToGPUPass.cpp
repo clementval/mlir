@@ -80,7 +80,7 @@ LoopOpLowering::matchAndRewrite(acc::LoopOp loopOp,
 }
 
 template<typename StructureOp>
-static void extractOperationsForSequential(StructureOp baseOp) {
+static void extractOperationsOutsideOfConstruct(StructureOp baseOp) {
     SmallVector < Operation * , 8 > toHoist;
     for (Operation &op : baseOp.getOperation()->getRegion(
             0).getBlocks().front().getOperations()) {
@@ -121,7 +121,7 @@ static FuncOp outlineParallelKernel(acc::ParallelOp parallelOp) {
 void OpenACCToGPULoweringPass::runOnModule() {
 
     ConversionTarget target(getContext());
-//    target.addIllegalDialect<acc::OpenACCOpsDialect>();
+    target.addIllegalDialect<acc::OpenACCOpsDialect>();
     target.addLegalDialect<gpu::GPUDialect>();
 
     target.addLegalOp<acc::ParallelOp>();
@@ -129,27 +129,28 @@ void OpenACCToGPULoweringPass::runOnModule() {
 
     // If operation is considered legal the rewrite pattern in not called.
     OwningRewritePatternList patterns;
-//    patterns.insert<TerminatorOpLowering<acc::ParallelEndOp>>(&getContext());
-//    patterns.insert<TerminatorOpLowering<acc::LoopEndOp>>(&getContext());
+    patterns.insert<TerminatorOpLowering<acc::ParallelEndOp>>(&getContext());
+    patterns.insert<TerminatorOpLowering<acc::LoopEndOp>>(&getContext());
 
     auto m = getModule();
     m.walk([&](acc::ParallelOp parallelOp) {
         parallelOp.walk([&](acc::LoopOp loopOp) {
-
             for (auto &op : loopOp.getBody().getOperations()) {
-                if(auto forOp = dyn_cast<loop::ForOp>(&op)) {
+                if (auto forOp = dyn_cast<loop::ForOp>(&op)) {
                     convertLoopNestToGPULaunch(forOp, 2, 1);
+                    extractOperationsOutsideOfConstruct(loopOp);
+                    loopOp.erase();
                     break;
                 } else {
-                    loopOp.emitError("First operation in acc.loop region must be a loop.");
+                    loopOp.emitError(
+                            "First operation in acc.loop region must be a loop.");
                     signalPassFailure();
                 }
             }
-
-            //loopOp.erase();
-        });
-        //parallelOp.erase();
-    });
+        }); // Walk over LoopOp within ParallelOp
+        extractOperationsOutsideOfConstruct(parallelOp);
+        parallelOp.erase();
+    }); // Walk over ParallelOp within the module
 
     if (failed(applyPartialConversion(m, target, patterns)))
         signalPassFailure();
