@@ -137,7 +137,7 @@ void OpenACCToGPULoweringPass::runOnModule() {
         parallelOp.walk([&](acc::LoopOp loopOp) {
             for (auto &op : loopOp.getBody().getOperations()) {
                 if (auto forOp = dyn_cast<loop::ForOp>(&op)) {
-                    convertLoopNestToGPULaunch(forOp, 2, 1);
+                    convertLoopNestToGPULaunch(forOp, 1, 1);
                     extractOperationsOutsideOfConstruct(loopOp);
                     loopOp.erase();
                     break;
