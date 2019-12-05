@@ -606,3 +606,46 @@ func @contraction(%arg0: vector<7x8x16x15xf32>, %arg1: vector<8x16x7x5xf32>,
       : vector<7x8x16x15xf32>, vector<8x16x7x5xf32> into vector<8x15x5xf32>
   return
 }
+
+// -----
+
+func @create_mask() {
+  %c2 = constant 2 : index
+  %c3 = constant 3 : index
+  // expected-error@+1 {{must specify an operand for each result vector dimension}}
+  %0 = vector.create_mask %c3, %c2 : vector<4x3x7xi1>
+  return
+}
+
+
+// -----
+
+func @constant_mask() {
+  // expected-error@+1 {{must specify array attr of size equal vector result rank}}
+  %0 = vector.constant_mask [3, 2, 7] : vector<4x3xi1>
+  return
+}
+
+// -----
+
+func @constant_mask_out_of_bounds() {
+  // expected-error@+1 {{array attr of size out of bounds of vector result dimension size}}
+  %0 = vector.constant_mask [-1, 2] : vector<4x3xi1>
+  return
+}
+
+// -----
+
+func @constant_mask_out_of_bounds() {
+  // expected-error@+1 {{array attr of size out of bounds of vector result dimension size}}
+  %0 = vector.constant_mask [3, 4] : vector<4x3xi1>
+  return
+}
+
+// -----
+
+func @constant_mask_with_zero_mask_dim_size() {
+  // expected-error@+1 {{expected all mask dim sizes to be zeros, as a result of conjunction with zero mask dim}}
+  %0 = vector.constant_mask [0, 2] : vector<4x3xi1>
+  return
+}

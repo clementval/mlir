@@ -62,20 +62,60 @@ def SPV_Dialect : Dialect {
 // https://github.com/KhronosGroup/SPIRV-Registry has the full list.
 def SPV_KHR_16bit_storage                : StrEnumAttrCase<"SPV_KHR_16bit_storage">;
 def SPV_KHR_8bit_storage                 : StrEnumAttrCase<"SPV_KHR_8bit_storage">;
+def SPV_KHR_device_group                 : StrEnumAttrCase<"SPV_KHR_device_group">;
 def SPV_KHR_float_controls               : StrEnumAttrCase<"SPV_KHR_float_controls">;
+def SPV_KHR_physical_storage_buffer      : StrEnumAttrCase<"SPV_KHR_physical_storage_buffer">;
+def SPV_KHR_multiview                    : StrEnumAttrCase<"SPV_KHR_multiview">;
+def SPV_KHR_no_integer_wrap_decoration   : StrEnumAttrCase<"SPV_KHR_no_integer_wrap_decoration">;
+def SPV_KHR_post_depth_coverage          : StrEnumAttrCase<"SPV_KHR_post_depth_coverage">;
 def SPV_KHR_shader_atomic_counter_ops    : StrEnumAttrCase<"SPV_KHR_shader_atomic_counter_ops">;
 def SPV_KHR_shader_ballot                : StrEnumAttrCase<"SPV_KHR_shader_ballot">;
+def SPV_KHR_shader_draw_parameters       : StrEnumAttrCase<"SPV_KHR_shader_draw_parameters">;
 def SPV_KHR_storage_buffer_storage_class : StrEnumAttrCase<"SPV_KHR_storage_buffer_storage_class">;
 def SPV_KHR_subgroup_vote                : StrEnumAttrCase<"SPV_KHR_subgroup_vote">;
 def SPV_KHR_variable_pointers            : StrEnumAttrCase<"SPV_KHR_variable_pointers">;
 def SPV_KHR_vulkan_memory_model          : StrEnumAttrCase<"SPV_KHR_vulkan_memory_model">;
 
+def SPV_EXT_fragment_fully_covered       : StrEnumAttrCase<"SPV_EXT_fragment_fully_covered">;
+def SPV_EXT_fragment_invocation_density  : StrEnumAttrCase<"SPV_EXT_fragment_invocation_density">;
+def SPV_EXT_fragment_shader_interlock    : StrEnumAttrCase<"SPV_EXT_fragment_shader_interlock">;
+def SPV_EXT_physical_storage_buffer      : StrEnumAttrCase<"SPV_EXT_physical_storage_buffer">;
+def SPV_EXT_shader_stencil_export        : StrEnumAttrCase<"SPV_EXT_shader_stencil_export">;
+
+def SPV_AMD_shader_explicit_vertex_parameter : StrEnumAttrCase<"SPV_AMD_shader_explicit_vertex_parameter">;
+
+def SPV_GOOGLE_user_type                 : StrEnumAttrCase<"SPV_GOOGLE_user_type">;
+
+def SPV_NV_compute_shader_derivatives    : StrEnumAttrCase<"SPV_NV_compute_shader_derivatives">;
+def SPV_NV_fragment_shader_barycentric   : StrEnumAttrCase<"SPV_NV_fragment_shader_barycentric">;
+def SPV_NV_geometry_shader_passthrough   : StrEnumAttrCase<"SPV_NV_geometry_shader_passthrough">;
+def SPV_NV_mesh_shader                   : StrEnumAttrCase<"SPV_NV_mesh_shader">;
+def SPV_NV_ray_tracing                   : StrEnumAttrCase<"SPV_NV_ray_tracing">;
+def SPV_NV_sample_mask_override_coverage : StrEnumAttrCase<"SPV_NV_sample_mask_override_coverage">;
+def SPV_NV_shader_sm_builtins            : StrEnumAttrCase<"SPV_NV_shader_sm_builtins">;
+def SPV_NV_shading_rate                  : StrEnumAttrCase<"SPV_NV_shading_rate">;
+def SPV_NV_stereo_view_rendering         : StrEnumAttrCase<"SPV_NV_stereo_view_rendering">;
+def SPV_NV_viewport_array2               : StrEnumAttrCase<"SPV_NV_viewport_array2">;
+
+def SPV_NVX_multiview_per_view_attributes : StrEnumAttrCase<"SPV_NVX_multiview_per_view_attributes">;
+
 def SPV_ExtensionAttr :
     StrEnumAttr<"Extension", "supported SPIR-V extensions", [
-      SPV_KHR_16bit_storage, SPV_KHR_8bit_storage, SPV_KHR_float_controls,
+      SPV_KHR_16bit_storage, SPV_KHR_8bit_storage, SPV_KHR_device_group,
+      SPV_KHR_float_controls, SPV_KHR_physical_storage_buffer, SPV_KHR_multiview,
+      SPV_KHR_no_integer_wrap_decoration, SPV_KHR_post_depth_coverage,
       SPV_KHR_shader_atomic_counter_ops, SPV_KHR_shader_ballot,
-      SPV_KHR_storage_buffer_storage_class, SPV_KHR_subgroup_vote,
-      SPV_KHR_variable_pointers, SPV_KHR_vulkan_memory_model
+      SPV_KHR_shader_draw_parameters, SPV_KHR_storage_buffer_storage_class,
+      SPV_KHR_subgroup_vote, SPV_KHR_variable_pointers,
+      SPV_KHR_vulkan_memory_model, SPV_EXT_fragment_fully_covered,
+      SPV_EXT_fragment_invocation_density, SPV_EXT_fragment_shader_interlock,
+      SPV_EXT_physical_storage_buffer, SPV_EXT_shader_stencil_export,
+      SPV_AMD_shader_explicit_vertex_parameter, SPV_GOOGLE_user_type,
+      SPV_NV_compute_shader_derivatives, SPV_NV_fragment_shader_barycentric,
+      SPV_NV_geometry_shader_passthrough, SPV_NV_mesh_shader, SPV_NV_ray_tracing,
+      SPV_NV_sample_mask_override_coverage, SPV_NV_shader_sm_builtins,
+      SPV_NV_shading_rate, SPV_NV_stereo_view_rendering,
+      SPV_NV_viewport_array2, SPV_NVX_multiview_per_view_attributes,
     ]> {
   let cppNamespace = "::mlir::spirv";
 }
@@ -953,6 +993,10 @@ class SPV_ScalarOrVectorOf<Type type> :
 def SPV_ScalarOrVector : AnyTypeOf<[SPV_Scalar, SPV_Vector]>;
 def SPV_ScalarOrVectorOrPtr : AnyTypeOf<[SPV_ScalarOrVector, SPV_AnyPtr]>;
 
+class SPV_Vec4<Type type> : VectorOfLengthAndType<[4], [type]>;
+def SPV_IntVec4 : SPV_Vec4<SPV_Integer>;
+def SPV_I32Vec4 : SPV_Vec4<I32>;
+
 // TODO(antiagainst): Use a more appropriate way to model optional operands
 class SPV_Optional<Type type> : Variadic<type>;
 
@@ -1107,6 +1151,8 @@ def SPV_OC_OpReturn                 : I32EnumAttrCase<"OpReturn", 253>;
 def SPV_OC_OpReturnValue            : I32EnumAttrCase<"OpReturnValue", 254>;
 def SPV_OC_OpUnreachable            : I32EnumAttrCase<"OpUnreachable", 255>;
 def SPV_OC_OpModuleProcessed        : I32EnumAttrCase<"OpModuleProcessed", 330>;
+def SPV_OC_OpGroupNonUniformBallot  : I32EnumAttrCase<"OpGroupNonUniformBallot", 339>;
+def SPV_OC_OpSubgroupBallotKHR      : I32EnumAttrCase<"OpSubgroupBallotKHR", 4421>;
 
 def SPV_OpcodeAttr :
     I32EnumAttr<"Opcode", "valid SPIR-V instructions", [
@@ -1146,10 +1192,9 @@ def SPV_OpcodeAttr :
       SPV_OC_OpBitCount, SPV_OC_OpControlBarrier, SPV_OC_OpMemoryBarrier,
       SPV_OC_OpPhi, SPV_OC_OpLoopMerge, SPV_OC_OpSelectionMerge, SPV_OC_OpLabel,
       SPV_OC_OpBranch, SPV_OC_OpBranchConditional, SPV_OC_OpReturn,
-      SPV_OC_OpReturnValue, SPV_OC_OpUnreachable, SPV_OC_OpModuleProcessed
+      SPV_OC_OpReturnValue, SPV_OC_OpUnreachable, SPV_OC_OpModuleProcessed,
+      SPV_OC_OpGroupNonUniformBallot, SPV_OC_OpSubgroupBallotKHR
       ]> {
-    let returnType = "::mlir::spirv::Opcode";
-    let convertFromStorage = "static_cast<::mlir::spirv::Opcode>($_self.getInt())";
     let cppNamespace = "::mlir::spirv";
 }
 
