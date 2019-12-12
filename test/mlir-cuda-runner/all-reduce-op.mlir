@@ -1,4 +1,4 @@
-// RUN: mlir-cuda-runner %s --shared-libs=%tools_lib_dir/mlir-cuda-runner/libcuda-runtime-wrappers%shlibext,%test_lib_dir/mlir-cpu-runner/libmlir_runner_utils%shlibext --entry-point-result=void | FileCheck %s
+// RUN: mlir-cuda-runner %s --shared-libs=%cuda_wrapper_library_dir/libcuda-runtime-wrappers%shlibext,%linalg_test_lib_dir/libmlir_runner_utils%shlibext --entry-point-result=void | FileCheck %s
 
 // CHECK-COUNT-8: [{{(5356, ){12}5356}}]
 func @main() {
@@ -22,9 +22,10 @@ func @main() {
     store %sum, %kernel_dst[%tz, %ty, %tx] : memref<?x?x?xf32>
     gpu.return
   }
-  call @print_memref_3d_f32(%dst) : (memref<?x?x?xf32>) -> ()
+  %U = memref_cast %dst : memref<?x?x?xf32> to memref<*xf32>
+  call @print_memref_f32(%U) : (memref<*xf32>) -> ()
   return
 }
 
 func @mcuMemHostRegisterMemRef3dFloat(%ptr : memref<?x?x?xf32>)
-func @print_memref_3d_f32(%ptr : memref<?x?x?xf32>)
+func @print_memref_f32(%ptr : memref<*xf32>)

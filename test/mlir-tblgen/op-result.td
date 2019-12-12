@@ -13,7 +13,7 @@ def OpA : NS_Op<"one_normal_result_op", []> {
 }
 
 // CHECK-LABEL: void OpA::build
-// CHECK:         ArrayRef<Type> resultTypes, ArrayRef<Value *> operands
+// CHECK:         ArrayRef<Type> resultTypes, ValueRange operands
 // CHECK:         assert(resultTypes.size() == 1u && "mismatched number of return types");
 // CHECK-NEXT:    tblgen_state.addTypes(resultTypes);
 
@@ -23,9 +23,9 @@ def OpB : NS_Op<"same_input_output_type_op", [SameOperandsAndResultType]> {
 }
 
 // CHECK-LABEL: OpB definitions
-// CHECK: void OpB::build(Builder *, OperationState &tblgen_state, Type y, Value *x)
+// CHECK: void OpB::build(Builder *tblgen_builder, OperationState &tblgen_state, Type y, Value *x)
 // CHECK:   tblgen_state.addTypes(y);
-// CHECK: void OpB::build(Builder *, OperationState &tblgen_state, Value *x)
+// CHECK: void OpB::build(Builder *tblgen_builder, OperationState &tblgen_state, Value *x)
 // CHECK:   tblgen_state.addTypes({x->getType()});
 
 def OpC : NS_Op<"three_normal_result_op", []> {
@@ -33,7 +33,7 @@ def OpC : NS_Op<"three_normal_result_op", []> {
 }
 
 // CHECK-LABEL: OpC definitions
-// CHECK:       void OpC::build(Builder *, OperationState &tblgen_state, Type x, Type resultType1, Type z)
+// CHECK:       void OpC::build(Builder *tblgen_builder, OperationState &tblgen_state, Type x, Type resultType1, Type z)
 // CHECK-NEXT:   tblgen_state.addTypes(x)
 // CHECK-NEXT:   tblgen_state.addTypes(resultType1)
 // CHECK-NEXT:   tblgen_state.addTypes(z)
@@ -45,7 +45,7 @@ def OpD : NS_Op<"type_attr_as_result_type", [FirstAttrDerivedResultType]> {
 }
 
 // CHECK-LABEL: OpD definitions
-// CHECK: void OpD::build(Builder *, OperationState &tblgen_state, ArrayRef<Value *> operands, ArrayRef<NamedAttribute> attributes)
+// CHECK: void OpD::build(Builder *, OperationState &tblgen_state, ValueRange operands, ArrayRef<NamedAttribute> attributes)
 // CHECK: tblgen_state.addTypes({attr.second.cast<TypeAttr>().getValue()});
 
 def OpE : NS_Op<"value_attr_as_result_type", [FirstAttrDerivedResultType]> {
@@ -54,7 +54,7 @@ def OpE : NS_Op<"value_attr_as_result_type", [FirstAttrDerivedResultType]> {
 }
 
 // CHECK-LABEL: OpE definitions
-// CHECK: void OpE::build(Builder *, OperationState &tblgen_state, ArrayRef<Value *> operands, ArrayRef<NamedAttribute> attributes)
+// CHECK: void OpE::build(Builder *, OperationState &tblgen_state, ValueRange operands, ArrayRef<NamedAttribute> attributes)
 // CHECK: tblgen_state.addTypes({attr.second.getType()});
 
 def OpF : NS_Op<"one_variadic_result_op", []> {
@@ -73,7 +73,7 @@ def OpG : NS_Op<"one_normal_and_one_variadic_result_op", []> {
 
 // CHECK-LABEL: OpG definitions
 
-// CHECK:      void OpG::build(Builder *, OperationState &tblgen_state, Type x, ArrayRef<Type> y)
+// CHECK:      void OpG::build(Builder *tblgen_builder, OperationState &tblgen_state, Type x, ArrayRef<Type> y)
 // CHECK-NEXT:   tblgen_state.addTypes(x);
 // CHECK-NEXT:   tblgen_state.addTypes(y);
 
@@ -105,5 +105,5 @@ def OpK : NS_Op<"only_input_is_variadic_with_same_value_type_op", [SameOperandsA
   let results = (outs AnyTensor:$result);
 }
 
-// CHECK-LABEL: OpK::build(Builder *, OperationState &tblgen_state, ArrayRef<Value *> input)
+// CHECK-LABEL: OpK::build(Builder *tblgen_builder, OperationState &tblgen_state, ValueRange input)
 // CHECK: tblgen_state.addTypes({input.front()->getType()});
